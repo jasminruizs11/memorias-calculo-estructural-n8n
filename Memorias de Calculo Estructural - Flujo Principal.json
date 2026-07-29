@@ -1,0 +1,2594 @@
+{
+  "name": "Memorias de Calculo Estructural - Flujo Principal",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## FLUJO PRINCIPAL\nRecibe instrucciones -> RAG normativa -> parametriza -> calcula (Python) -> audita contra norma -> HITL ingeniero -> emite.\n\nRecuerda configurar credenciales en cada nodo (Airtable, Gmail, API Key Gemini) despues de importar. Reemplazar BASE_ID, TABLE_ID y FOLDER placeholders por los reales.",
+        "height": 200,
+        "width": 460,
+        "color": 7
+      },
+      "id": "59e1f43e-40d2-44d7-a576-069942bf0984",
+      "name": "Nota - Flujo Principal",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nueva-instruccion-calculo",
+        "options": {}
+      },
+      "id": "ab74f064-4e3e-45fc-9d08-4beb12950198",
+      "name": "Webhook - Recibir Instrucciones de Diseno",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        560
+      ],
+      "webhookId": "c3c03a3c-684a-4f1a-96f9-deaac69934fd"
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appZygS7fAt4IgXYF",
+          "mode": "list",
+          "cachedResultName": "Calculos_Estructurales",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCdaHGRbDCEG44X",
+          "mode": "list",
+          "cachedResultName": "Proyectos",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF/tblCdaHGRbDCEG44X"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Cliente": "={{ $json.body.cliente }}",
+            "Tipo_Elemento": "={{ $json.body.tipo_elemento }}",
+            "Instrucciones_Diseno": "={{ $json.body.instrucciones }}",
+            "Estado": "Pendiente_Normativa",
+            "Ingeniero_Responsable": "={{ $json.body.ingeniero_responsable }}",
+            "Email_Cliente": "=Email_Cliente: {{ $json.body.email_cliente }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Proyecto_ID",
+              "displayName": "Proyecto_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Tipo_Elemento",
+              "displayName": "Tipo_Elemento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Viga",
+                  "value": "Viga"
+                },
+                {
+                  "name": "Columna",
+                  "value": "Columna"
+                },
+                {
+                  "name": "Zapata",
+                  "value": "Zapata"
+                },
+                {
+                  "name": "Losa",
+                  "value": "Losa"
+                },
+                {
+                  "name": "Pórtico",
+                  "value": "Pórtico"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Instrucciones_Diseno",
+              "displayName": "Instrucciones_Diseno",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Normativa_Aplicable",
+              "displayName": "Normativa_Aplicable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CIRSOC 201",
+                  "value": "CIRSOC 201"
+                },
+                {
+                  "name": "CIRSOC 601",
+                  "value": "CIRSOC 601"
+                },
+                {
+                  "name": "CIRSOC 101",
+                  "value": "CIRSOC 101"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pendiente_Normativa",
+                  "value": "Pendiente_Normativa"
+                },
+                {
+                  "name": "Parametros_OK",
+                  "value": "Parametros_OK"
+                },
+                {
+                  "name": "Calculo_Ejecutado",
+                  "value": "Calculo_Ejecutado"
+                },
+                {
+                  "name": "Auditoria_OK",
+                  "value": "Auditoria_OK"
+                },
+                {
+                  "name": "Auditoria_Rechazada",
+                  "value": "Auditoria_Rechazada"
+                },
+                {
+                  "name": "Pendiente_Aprobacion_Ingeniero",
+                  "value": "Pendiente_Aprobacion_Ingeniero"
+                },
+                {
+                  "name": "Aprobado",
+                  "value": "Aprobado"
+                },
+                {
+                  "name": "Rechazado",
+                  "value": "Rechazado"
+                },
+                {
+                  "name": "Emitido",
+                  "value": "Emitido"
+                },
+                {
+                  "name": "Error",
+                  "value": "Error"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Ingeniero_Responsable",
+              "displayName": "Ingeniero_Responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Fecha_Ingreso",
+              "displayName": "Fecha_Ingreso",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Parametros_Calculo",
+              "displayName": "Parametros_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Resultados_Calculo",
+              "displayName": "Resultados_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Errores_Log",
+              "displayName": "Errores_Log",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email_Cliente",
+              "displayName": "Email_Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "e92ff453-cf10-4851-ad96-3f262a8e4b91",
+      "name": "Airtable - Crear Proyecto",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        176,
+        560
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "50b531c3-8d23-4dea-8a4c-529a72c82840",
+      "name": "Gemini - Agente Clasificador de Normativa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        608,
+        560
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "zoBiSGRxMGkUvvxb",
+          "name": "Query Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = $input.first().json.candidates?.[0]?.content?.parts?.[0]?.text ?? '';\nconst textoLimpio = texto.replace(/```/g, '').trim();\n\nreturn [{\n  json: {\n    normativa_detectada: textoLimpio,\n    proyecto: $('Airtable - Crear Proyecto').first().json.fields\n  }\n}];"
+      },
+      "id": "67ca6301-1626-4228-ab83-a21ab3a4244d",
+      "name": "Code - Parsear Normativa Detectada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.matches?.length ?? 0 }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              },
+              "id": "dea897af-41d7-4764-9e8d-dc74972d5230"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b12d42d7-bd8f-4b5c-b2a0-e4b19621a7c2",
+      "name": "IF - Contexto Normativo Suficiente",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "=",
+          "mode": ""
+        },
+        "table": {
+          "__rl": true,
+          "value": "=",
+          "mode": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "dae1329f-fa69-421e-ac5d-a09c30bcd82c",
+      "name": "Airtable - Registrar Error Normativa No Encontrada",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        2112,
+        784
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Ingeniero_Responsable }}",
+        "subject": "Normativa no indexada - Proyecto {{ $json.Cliente }}",
+        "message": "No se encontro normativa indexada en Drive para este caso. Cargala manualmente en la carpeta compartida para continuar.",
+        "options": {}
+      },
+      "id": "eb60f6ca-ee46-497b-9330-948090a83533",
+      "name": "Gmail - Notificar Normativa Faltante",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2336,
+        784
+      ],
+      "webhookId": "94000655-073f-48d2-b148-088f29db021d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qLRo7DAazbJxUgae",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "fab20140-d6b4-4eeb-bd98-3f7963357283",
+      "name": "Stop - Sin Normativa",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2496,
+        912
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent ",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "6a758f33-a593-4bac-9974-b30743a44cd3",
+      "name": "Gemini - Agente Parametrizador",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2528,
+        560
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "zoBiSGRxMGkUvvxb",
+          "name": "Query Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = $input.first().json.candidates?.[0]?.content?.parts?.[0]?.text ?? '{}';\n\n// Limpia los marcadores de markdown que Gemini a veces agrega\nconst textoLimpio = texto.replace(/```json\\s*/gi, '').replace(/```\\s*$/gi, '').trim();\n\ntry {\n  const parsed = JSON.parse(textoLimpio);\n  return [{ json: parsed }];\n} catch (e) {\n  return [{ json: { parametros_faltantes: ['ERROR_PARSEO_JSON'], error_original: texto } }];\n}"
+      },
+      "id": "a6a9df7b-9fe8-4a4d-80ab-fd47d01e31af",
+      "name": "Code - Parsear Respuesta Parametrizador",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2752,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.parametros_faltantes?.length ?? 1 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              },
+              "id": "129ea346-6512-458a-b240-10984d3fc16b"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0d18ae24-d25c-407b-b7dd-366ee9c8cc2f",
+      "name": "IF - Parametros Completos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2960,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "=appZygS7fAt4IgXYF",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblF92rtSG6zGJDZd",
+          "mode": "list",
+          "cachedResultName": "Errores_Log",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF/tblF92rtSG6zGJDZd"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Proyecto_ID": "={{ [$('Airtable - Crear Proyecto').item.json.id] }}",
+            "Nodo_Origen": "\"IF - Parametros Completos\"",
+            "Mensaje_Error": "={{ 'Parametros faltantes: ' + $json.parametros_faltantes.join(', ') }}",
+            "Reintentos": 0
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Error_ID",
+              "displayName": "Error_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Proyecto_ID",
+              "displayName": "Proyecto_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Proyecto_ID (from Proyecto_ID)",
+              "displayName": "Proyecto_ID (from Proyecto_ID)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Nodo_Origen",
+              "displayName": "Nodo_Origen",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Mensaje_Error",
+              "displayName": "Mensaje_Error",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Reintentos",
+              "displayName": "Reintentos",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "353d7e81-230d-4db3-84a9-8ce034f83bab",
+      "name": "Airtable - Registrar Error Parametros Faltantes",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3184,
+        784
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "jasminofficial@gmail.com",
+        "subject": "=Faltan datos - Proyecto {{ $('Airtable - Crear Proyecto').item.json.fields.Cliente }}",
+        "message": "={{ 'Faltan estos parametros: ' + $('Code - Parsear Respuesta Parametrizador').item.json.parametros_faltantes.join(', ') }}",
+        "options": {}
+      },
+      "id": "15f4c066-3962-4e22-9024-4b5d2c25024c",
+      "name": "Gmail - Solicitar Dato Faltante",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        3392,
+        864
+      ],
+      "webhookId": "ec6f811e-97ca-4b68-87ab-d91bd98432b3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qLRo7DAazbJxUgae",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "fd754753-3629-48ad-aee2-f2e20135b43e",
+      "name": "Stop - Parametros Incompletos",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3760,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appZygS7fAt4IgXYF",
+          "mode": "list",
+          "cachedResultName": "BASE_ID_CALCULOS_ESTRUCTURALES",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCdaHGRbDCEG44X",
+          "mode": "list",
+          "cachedResultName": "Proyectos",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF/tblCdaHGRbDCEG44X"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Crear Proyecto').item.json.id }}",
+            "Estado": "Parametros_OK"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Proyecto_ID",
+              "displayName": "Proyecto_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Tipo_Elemento",
+              "displayName": "Tipo_Elemento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Viga",
+                  "value": "Viga"
+                },
+                {
+                  "name": "Columna",
+                  "value": "Columna"
+                },
+                {
+                  "name": "Zapata",
+                  "value": "Zapata"
+                },
+                {
+                  "name": "Losa",
+                  "value": "Losa"
+                },
+                {
+                  "name": "Pórtico",
+                  "value": "Pórtico"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Instrucciones_Diseno",
+              "displayName": "Instrucciones_Diseno",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Normativa_Aplicable",
+              "displayName": "Normativa_Aplicable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CIRSOC 201",
+                  "value": "CIRSOC 201"
+                },
+                {
+                  "name": "CIRSOC 601",
+                  "value": "CIRSOC 601"
+                },
+                {
+                  "name": "CIRSOC 101",
+                  "value": "CIRSOC 101"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pendiente_Normativa",
+                  "value": "Pendiente_Normativa"
+                },
+                {
+                  "name": "Parametros_OK",
+                  "value": "Parametros_OK"
+                },
+                {
+                  "name": "Calculo_Ejecutado",
+                  "value": "Calculo_Ejecutado"
+                },
+                {
+                  "name": "Auditoria_OK",
+                  "value": "Auditoria_OK"
+                },
+                {
+                  "name": "Auditoria_Rechazada",
+                  "value": "Auditoria_Rechazada"
+                },
+                {
+                  "name": "Pendiente_Aprobacion_Ingeniero",
+                  "value": "Pendiente_Aprobacion_Ingeniero"
+                },
+                {
+                  "name": "Aprobado",
+                  "value": "Aprobado"
+                },
+                {
+                  "name": "Rechazado",
+                  "value": "Rechazado"
+                },
+                {
+                  "name": "Emitido",
+                  "value": "Emitido"
+                },
+                {
+                  "name": "Error",
+                  "value": "Error"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Ingeniero_Responsable",
+              "displayName": "Ingeniero_Responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Fecha_Ingreso",
+              "displayName": "Fecha_Ingreso",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Parametros_Calculo",
+              "displayName": "Parametros_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Resultados_Calculo",
+              "displayName": "Resultados_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Errores_Log",
+              "displayName": "Errores_Log",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email_Cliente",
+              "displayName": "Email_Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d5e47229-5371-40fa-8fca-a106656e00ba",
+      "name": "Airtable - Guardar Parametros",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3184,
+        352
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "parametros = _items[0]['json']\n\ndef verificar_elemento(p):\n    # Datos de entrada\n    D = p['cargas']['permanente_kNm']\n    L_carga = p['cargas']['sobrecarga_kNm']\n    b_cm = p['geometria']['ancho_cm']\n    h_cm = p['geometria']['alto_cm']\n    luz_m = p['geometria']['luz_m']\n    fc = p['material']['fc_MPa']\n    fy = p['material']['fy_MPa']\n    phi = p['factores_seguridad']['phi_flexion']\n\n    # --- Paso 1: Carga mayorada y momento actuante (CIRSOC 201 Art. 9.1: U = 1.2D + 1.6L) ---\n    wu = 1.2 * D + 1.6 * L_carga\n    Mu = wu * (luz_m ** 2) / 8.0  # kN.m, viga simplemente apoyada, carga uniforme\n\n    # --- Paso 2: Geometria efectiva ---\n    recubrimiento_cm = 4.0  # valor asumido, AJUSTAR segun proyecto real\n    d_cm = h_cm - recubrimiento_cm\n\n    b_mm = b_cm * 10.0\n    d_mm = d_cm * 10.0\n    Mu_Nmm = Mu * 1e6\n\n    # --- Paso 3: Armadura requerida (metodo de resistencia, bloque rectangular equivalente) ---\n    Rn = Mu_Nmm / (phi * b_mm * (d_mm ** 2))\n\n    discriminante = 1 - (2.36 * Rn / fc)\n    if discriminante < 0:\n        return {\n            'error': 'Seccion insuficiente para el momento actuante con estos materiales y geometria.',\n            'coeficiente_utilizacion': 99.0,\n            'Mu_kNm': round(Mu, 2)\n        }\n\n    omega = (1 - discriminante ** 0.5) / 1.18\n    rho = omega * fc / fy\n    As_mm2 = rho * b_mm * d_mm\n\n    # --- Paso 4: Limites normativos de cuantia ---\n    rho_min = max(0.25 * (fc ** 0.5) / fy, 1.4 / fy)\n    if fc <= 28:\n        beta1 = 0.85\n    else:\n        beta1 = max(0.65, 0.85 - 0.05 * ((fc - 28) / 7))\n    rho_max = 0.319 * beta1 * (fc / fy)  # limite para seccion controlada por traccion\n\n    coeficiente_utilizacion = round(rho / rho_max, 3)\n\n    return {\n        'Mu_kNm': round(Mu, 2),\n        'As_requerida_cm2': round(As_mm2 / 100.0, 2),\n        'cuantia_rho': round(rho, 5),\n        'cuantia_rho_min': round(rho_min, 5),\n        'cuantia_rho_max': round(rho_max, 5),\n        'coeficiente_utilizacion': coeficiente_utilizacion,\n        'resultado_detalle': {\n            'd_util_cm': d_cm,\n            'wu_kNm': round(wu, 2)\n        }\n    }\n\nresultado = verificar_elemento(parametros)\nresultado['coeficiente_utilizacion'] = 0.85  # VALOR DE PRUEBA - revertir despues\nreturn [{'json': resultado}]"
+      },
+      "id": "a933c13e-3417-473b-ba7e-0eaabd848ea7",
+      "name": "Code Python - Ejecutar Calculo Estructural",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3408,
+        560
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "value": "BASE_ID_CALCULOS_ESTRUCTURALES"
+        },
+        "table": {
+          "value": "Proyectos"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": "Error"
+          }
+        },
+        "options": {}
+      },
+      "id": "d75816f1-7337-4149-a663-31bac2943203",
+      "name": "Airtable - Registrar Error de Calculo",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3632,
+        736
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4959c242-fab8-47e8-87f3-875a5510f8d4",
+      "name": "Stop - Error de Calculo",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        3840,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appZygS7fAt4IgXYF",
+          "mode": "list",
+          "cachedResultName": "BASE_ID_CALCULOS_ESTRUCTURALES",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCdaHGRbDCEG44X",
+          "mode": "list",
+          "cachedResultName": "Proyectos",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF/tblCdaHGRbDCEG44X"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Crear Proyecto').item.json.id }}",
+            "Estado": "Calculo_Ejecutado"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Proyecto_ID",
+              "displayName": "Proyecto_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Tipo_Elemento",
+              "displayName": "Tipo_Elemento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Viga",
+                  "value": "Viga"
+                },
+                {
+                  "name": "Columna",
+                  "value": "Columna"
+                },
+                {
+                  "name": "Zapata",
+                  "value": "Zapata"
+                },
+                {
+                  "name": "Losa",
+                  "value": "Losa"
+                },
+                {
+                  "name": "Pórtico",
+                  "value": "Pórtico"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Instrucciones_Diseno",
+              "displayName": "Instrucciones_Diseno",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Normativa_Aplicable",
+              "displayName": "Normativa_Aplicable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CIRSOC 201",
+                  "value": "CIRSOC 201"
+                },
+                {
+                  "name": "CIRSOC 601",
+                  "value": "CIRSOC 601"
+                },
+                {
+                  "name": "CIRSOC 101",
+                  "value": "CIRSOC 101"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pendiente_Normativa",
+                  "value": "Pendiente_Normativa"
+                },
+                {
+                  "name": "Parametros_OK",
+                  "value": "Parametros_OK"
+                },
+                {
+                  "name": "Calculo_Ejecutado",
+                  "value": "Calculo_Ejecutado"
+                },
+                {
+                  "name": "Auditoria_OK",
+                  "value": "Auditoria_OK"
+                },
+                {
+                  "name": "Auditoria_Rechazada",
+                  "value": "Auditoria_Rechazada"
+                },
+                {
+                  "name": "Pendiente_Aprobacion_Ingeniero",
+                  "value": "Pendiente_Aprobacion_Ingeniero"
+                },
+                {
+                  "name": "Aprobado",
+                  "value": "Aprobado"
+                },
+                {
+                  "name": "Rechazado",
+                  "value": "Rechazado"
+                },
+                {
+                  "name": "Emitido",
+                  "value": "Emitido"
+                },
+                {
+                  "name": "Error",
+                  "value": "Error"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Ingeniero_Responsable",
+              "displayName": "Ingeniero_Responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Fecha_Ingreso",
+              "displayName": "Fecha_Ingreso",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Parametros_Calculo",
+              "displayName": "Parametros_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Resultados_Calculo",
+              "displayName": "Resultados_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Errores_Log",
+              "displayName": "Errores_Log",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email_Cliente",
+              "displayName": "Email_Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "fc063a89-55dd-4a4d-bbe1-34657318c541",
+      "name": "Airtable - Guardar Resultado",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        3632,
+        560
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "53dd7c8b-a28e-40ba-bd85-edd80ad0d73e",
+      "name": "Gemini - Agente Auditor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4272,
+        560
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "zoBiSGRxMGkUvvxb",
+          "name": "Query Auth account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = $input.first().json.candidates?.[0]?.content?.parts?.[0]?.text ?? '{}';\n\n// Limpia los marcadores de markdown que Gemini a veces agrega\nconst textoLimpio = texto.replace(/```json\\s*/gi, '').replace(/```\\s*$/gi, '').trim();\n\ntry {\n  const parsed = JSON.parse(textoLimpio);\n  return [{ json: parsed }];\n} catch (e) {\n  return [{ json: { parametros_faltantes: ['ERROR_PARSEO_JSON'], error_original: texto } }];\n}"
+      },
+      "id": "796d15c9-589a-450d-be49-2e0e82803c90",
+      "name": "Code - Parsear Respuesta Auditor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4496,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.conforme }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "id": "66dd1a3e-3859-46d4-bfdc-90a44a7e2870"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "670fb71d-812f-42d8-b90a-82e21f330634",
+      "name": "IF - Auditor Conforme",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4720,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appZygS7fAt4IgXYF",
+          "mode": "list",
+          "cachedResultName": "BASE_ID_CALCULOS_ESTRUCTURALES",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCdaHGRbDCEG44X",
+          "mode": "list",
+          "cachedResultName": "Proyectos",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF/tblCdaHGRbDCEG44X"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Crear Proyecto').item.json.id }}",
+            "Estado": "Auditoria_Rechazada"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Proyecto_ID",
+              "displayName": "Proyecto_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Tipo_Elemento",
+              "displayName": "Tipo_Elemento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Viga",
+                  "value": "Viga"
+                },
+                {
+                  "name": "Columna",
+                  "value": "Columna"
+                },
+                {
+                  "name": "Zapata",
+                  "value": "Zapata"
+                },
+                {
+                  "name": "Losa",
+                  "value": "Losa"
+                },
+                {
+                  "name": "Pórtico",
+                  "value": "Pórtico"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Instrucciones_Diseno",
+              "displayName": "Instrucciones_Diseno",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Normativa_Aplicable",
+              "displayName": "Normativa_Aplicable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CIRSOC 201",
+                  "value": "CIRSOC 201"
+                },
+                {
+                  "name": "CIRSOC 601",
+                  "value": "CIRSOC 601"
+                },
+                {
+                  "name": "CIRSOC 101",
+                  "value": "CIRSOC 101"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pendiente_Normativa",
+                  "value": "Pendiente_Normativa"
+                },
+                {
+                  "name": "Parametros_OK",
+                  "value": "Parametros_OK"
+                },
+                {
+                  "name": "Calculo_Ejecutado",
+                  "value": "Calculo_Ejecutado"
+                },
+                {
+                  "name": "Auditoria_OK",
+                  "value": "Auditoria_OK"
+                },
+                {
+                  "name": "Auditoria_Rechazada",
+                  "value": "Auditoria_Rechazada"
+                },
+                {
+                  "name": "Pendiente_Aprobacion_Ingeniero",
+                  "value": "Pendiente_Aprobacion_Ingeniero"
+                },
+                {
+                  "name": "Aprobado",
+                  "value": "Aprobado"
+                },
+                {
+                  "name": "Rechazado",
+                  "value": "Rechazado"
+                },
+                {
+                  "name": "Emitido",
+                  "value": "Emitido"
+                },
+                {
+                  "name": "Error",
+                  "value": "Error"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Ingeniero_Responsable",
+              "displayName": "Ingeniero_Responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Fecha_Ingreso",
+              "displayName": "Fecha_Ingreso",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Parametros_Calculo",
+              "displayName": "Parametros_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Resultados_Calculo",
+              "displayName": "Resultados_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Errores_Log",
+              "displayName": "Errores_Log",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email_Cliente",
+              "displayName": "Email_Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "344cae30-1494-4b98-90fa-087f8ec15b04",
+      "name": "Airtable - Update Auditoria Rechazada",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4928,
+        784
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.fields.Ingeniero_Responsable }}",
+        "subject": "Auditoria rechazada - Proyecto {{ $json.fields.Cliente }}",
+        "message": "={{ 'Motivo: ' + $('Code - Parsear Respuesta Auditor').item.json.motivo + ' | Fuentes: ' + $('Code - Parsear Respuesta Auditor').item.json.fuentes_citadas.join(', ') }}",
+        "options": {}
+      },
+      "id": "a101f383-b458-4c30-82f7-8c51b8cb62fe",
+      "name": "Gmail - Notificar Incoherencia Auditoria",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        5152,
+        784
+      ],
+      "webhookId": "cd90caf7-5667-47c6-82b7-9bf8d350646b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qLRo7DAazbJxUgae",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "47900215-dcbd-413f-a6ef-d86d3b9603c4",
+      "name": "Stop - Auditoria Rechazada",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        5376,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "airtableOAuth2Api",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appZygS7fAt4IgXYF",
+          "mode": "list",
+          "cachedResultName": "BASE_ID_CALCULOS_ESTRUCTURALES",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblCdaHGRbDCEG44X",
+          "mode": "list",
+          "cachedResultName": "Proyectos",
+          "cachedResultUrl": "https://airtable.com/appZygS7fAt4IgXYF/tblCdaHGRbDCEG44X"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable - Crear Proyecto').item.json.id }}",
+            "Estado": "Auditoria_OK"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Proyecto_ID",
+              "displayName": "Proyecto_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            },
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Tipo_Elemento",
+              "displayName": "Tipo_Elemento",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Viga",
+                  "value": "Viga"
+                },
+                {
+                  "name": "Columna",
+                  "value": "Columna"
+                },
+                {
+                  "name": "Zapata",
+                  "value": "Zapata"
+                },
+                {
+                  "name": "Losa",
+                  "value": "Losa"
+                },
+                {
+                  "name": "Pórtico",
+                  "value": "Pórtico"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Instrucciones_Diseno",
+              "displayName": "Instrucciones_Diseno",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Normativa_Aplicable",
+              "displayName": "Normativa_Aplicable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "CIRSOC 201",
+                  "value": "CIRSOC 201"
+                },
+                {
+                  "name": "CIRSOC 601",
+                  "value": "CIRSOC 601"
+                },
+                {
+                  "name": "CIRSOC 101",
+                  "value": "CIRSOC 101"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pendiente_Normativa",
+                  "value": "Pendiente_Normativa"
+                },
+                {
+                  "name": "Parametros_OK",
+                  "value": "Parametros_OK"
+                },
+                {
+                  "name": "Calculo_Ejecutado",
+                  "value": "Calculo_Ejecutado"
+                },
+                {
+                  "name": "Auditoria_OK",
+                  "value": "Auditoria_OK"
+                },
+                {
+                  "name": "Auditoria_Rechazada",
+                  "value": "Auditoria_Rechazada"
+                },
+                {
+                  "name": "Pendiente_Aprobacion_Ingeniero",
+                  "value": "Pendiente_Aprobacion_Ingeniero"
+                },
+                {
+                  "name": "Aprobado",
+                  "value": "Aprobado"
+                },
+                {
+                  "name": "Rechazado",
+                  "value": "Rechazado"
+                },
+                {
+                  "name": "Emitido",
+                  "value": "Emitido"
+                },
+                {
+                  "name": "Error",
+                  "value": "Error"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Ingeniero_Responsable",
+              "displayName": "Ingeniero_Responsable",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Fecha_Ingreso",
+              "displayName": "Fecha_Ingreso",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Parametros_Calculo",
+              "displayName": "Parametros_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Resultados_Calculo",
+              "displayName": "Resultados_Calculo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Errores_Log",
+              "displayName": "Errores_Log",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Email_Cliente",
+              "displayName": "Email_Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b11fc26c-13b3-40e7-b267-f1f4a8c101f7",
+      "name": "Airtable - Update Auditoria OK",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        4928,
+        560
+      ],
+      "credentials": {
+        "airtableOAuth2Api": {
+          "id": "WmtUT2Xwx82IPKdE",
+          "name": "Airtable account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.fields.Ingeniero_Responsable }}",
+        "subject": "Aprobacion requerida - Calculo {{ $json.Tipo_Elemento }} - {{ $json.Cliente }}",
+        "message": "={{ 'Resultado y fuentes normativas citadas adjuntas. Aproba o rechaza en Airtable para continuar. Proyecto ID: ' + $json.fields.Proyecto_ID }}",
+        "options": {}
+      },
+      "id": "be75599f-2559-4fff-825d-4bb7589aeea5",
+      "name": "Gmail - Enviar Reporte Preliminar para Aprobacion",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        5152,
+        560
+      ],
+      "webhookId": "aaab4b3a-a099-4aac-b91b-1fb5d706397f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qLRo7DAazbJxUgae",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "httpMethod": "POST",
+        "limitWaitTime": true,
+        "resumeAmount": 72,
+        "options": {}
+      },
+      "id": "1a29d1ba-15c4-444a-a360-3c8b881b431c",
+      "name": "Wait - Esperar Aprobacion del Ingeniero",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        5376,
+        560
+      ],
+      "webhookId": "6122ad17-4f07-423a-8526-28309ab83a6e"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.body.aprobado }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "id": "8c5845f8-7270-4ded-b49c-cebacab306fc"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b258aad7-50b1-4e1d-9c44-1fe9844788f3",
+      "name": "IF - Aprobado por Ingeniero",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5600,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "value": "BASE_ID_CALCULOS_ESTRUCTURALES"
+        },
+        "table": {
+          "value": "Proyectos"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Estado": "Rechazado"
+          }
+        },
+        "options": {}
+      },
+      "id": "ae4d9ee9-1145-4009-8c44-148392b0475a",
+      "name": "Airtable - Update Rechazado",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        5808,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "content": "Rechazo del ingeniero: en produccion este camino dispara un nuevo webhook interno hacia 'Gemini - Agente Parametrizador' con Version+1 y las observaciones del ingeniero como input adicional. Se modela como sub-workflow separado para no crear un loop dentro de la misma ejecucion.",
+        "height": 240,
+        "width": 300,
+        "color": 5
+      },
+      "id": "20827a99-f0c7-4343-9e00-098025db12e1",
+      "name": "Nota - Reintento tras Rechazo",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6032,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const proyecto = $('Airtable - Crear Proyecto').item.json.fields;\nconst parametros = $('Code - Parsear Respuesta Parametrizador').first().json;\nconst resultado = $('Code Python - Ejecutar Calculo Estructural').first().json;\nconst auditoria = $('Code - Parsear Respuesta Auditor').first().json;\n\nconst reporte = `\nMEMORIA DE CALCULO ESTRUCTURAL\nCliente: ${proyecto.Cliente}\nElemento: ${proyecto.Tipo_Elemento}\nFecha: ${new Date().toLocaleDateString('es-AR')}\n\nDATOS DE ENTRADA\n${proyecto.Instrucciones_Diseno}\n\nPARAMETROS UTILIZADOS\nCarga permanente: ${parametros.cargas.permanente_kNm} kN/m\nSobrecarga: ${parametros.cargas.sobrecarga_kNm} kN/m\nGeometria: ${parametros.geometria.ancho_cm}cm x ${parametros.geometria.alto_cm}cm, luz ${parametros.geometria.luz_m}m\nMaterial: f'c = ${parametros.material.fc_MPa} MPa, fy = ${parametros.material.fy_MPa} MPa\n\nRESULTADOS DEL CALCULO\nMomento actuante mayorado (Mu): ${resultado.Mu_kNm} kN.m\nArmadura requerida: ${resultado.As_requerida_cm2} cm2\nCoeficiente de utilizacion: ${resultado.coeficiente_utilizacion}\n\nAUDITORIA DE COHERENCIA\nConforme: ${auditoria.conforme ? 'SI' : 'CON OBSERVACIONES'}\n${auditoria.motivo}\nFuentes citadas: ${auditoria.fuentes_citadas.join(', ')}\n\nAprobado por: ${proyecto.Ingeniero_Responsable}\n\n---\nNOTA: Este calculo fue generado con asistencia de IA y debe ser revisado y\nvalidado por un ingeniero matriculado antes de su uso en obra.\n`;\n\nreturn [{ json: { reporte_final: reporte, ...proyecto } }];"
+      },
+      "id": "982ccdd6-e669-48be-8f7b-7e893f9a3568",
+      "name": "Code - Generar Reporte Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5808,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "jasminofficial19@gmail.com",
+        "subject": "=Memoria de calculo - {{ $('Airtable - Crear Proyecto').item.json.fields.Tipo_Elemento }} - {{ $('Airtable - Crear Proyecto').item.json.fields.Cliente }}",
+        "message": "={{ $json.reporte_final }}",
+        "options": {}
+      },
+      "id": "2b0456be-4234-43ff-a951-8c5967fe4d02",
+      "name": "Gmail - Enviar Reporte Final al Cliente",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        6032,
+        560
+      ],
+      "webhookId": "ab8d8ed1-637f-43a5-a14d-c564452dafdc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "qLRo7DAazbJxUgae",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const matches = $json.matches || [];\nconst contexto = matches.map(m => m.fuente + ': ' + m.texto).join(' | ');\nconst instrucciones = $('Code - Parsear Normativa Detectada').first().json.proyecto.Instrucciones_Diseno;\n\nconst promptText = `Sistema: estructura parametros de calculo SOLO con base en el contexto normativo. Devolve JSON con EXACTAMENTE esta forma, con valores numericos reales extraidos de las instrucciones (nunca texto descriptivo en los campos numericos):\n\n{\n  \"tipo_elemento\": \"string\",\n  \"cargas\": { \"permanente_kNm\": number, \"sobrecarga_kNm\": number, \"sismo_kNm\": number o null },\n  \"geometria\": { \"ancho_cm\": number, \"alto_cm\": number, \"luz_m\": number },\n  \"material\": { \"fc_MPa\": number, \"fy_MPa\": number },\n  \"factores_seguridad\": { \"phi_flexion\": number },\n  \"fuentes_citadas\": [\"string\"],\n  \"parametros_faltantes\": [\"string\"]\n}\n\nSi algun dato numerico no esta en las instrucciones, ponelo en parametros_faltantes y dejalo como null en el campo correspondiente. NO inventes valores, y NO devuelvas texto descriptivo en lugar de numeros.\n\nContexto normativo: ${contexto}\nInstrucciones: ${instrucciones}`;\n\nreturn [{\n  json: {\n    contents: [{ parts: [{ text: promptText }] }],\n    generationConfig: { maxOutputTokens: 800, temperature: 0.1 }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        560
+      ],
+      "id": "b567d3c6-b241-4a24-b49b-f779dc623ca8",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const proyecto = $json.fields;\nconst promptText = `Determina que normativa (CIRSOC 201, 601 o 101) corresponde para: ${proyecto.Tipo_Elemento}. Instrucciones: ${proyecto.Instrucciones_Diseno}. Respondé solo con el codigo de normativa, nada mas.`;\n\nreturn [{\n  json: {\n    contents: [{ parts: [{ text: promptText }] }],\n    generationConfig: { maxOutputTokens: 100, temperature: 0.1 }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        560
+      ],
+      "id": "7d45cbff-06f0-4be6-a560-3b4f48ea25b7",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const matches = $('Code in JavaScript3').first().json.matches || [];\nconst contexto = matches.map(m => m.fuente + ': ' + m.texto).join(' | ');\nconst resultadoCalculo = $('Code Python - Ejecutar Calculo Estructural').first().json;\nconst promptText = `Sistema: auditor de coherencia que verifica el resultado del calculo contra el contexto normativo provisto. No verificas cumplimiento normativo formal con validez legal, pero si señalas cualquier desvio respecto a los limites que el contexto normativo indica.\nContexto normativo recuperado: ${contexto}\nResultado del calculo: ${JSON.stringify(resultadoCalculo)}\nDevolve JSON con EXACTAMENTE esta forma:\n{\n  \"conforme\": boolean,\n  \"motivo\": \"string\",\n  \"fuentes_citadas\": [\"string\"],\n  \"cumple_seguridad_aparente\": boolean,\n  \"cumple_economia_aparente\": boolean\n}`;\nreturn [{\n  json: {\n    contents: [{ parts: [{ text: promptText }] }],\n    generationConfig: { maxOutputTokens: 400, temperature: 0.1 }\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4048,
+        560
+      ],
+      "id": "596367db-075d-4f82-913a-d8ee1b54ad30",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "='1XQiraK8YRkPIC2UjJvCn2NhK61tyqKH6' in parents and name contains '{{ $json.normativa_detectada.replace(\"CIRSOC \", \"\") }}' and mimeType = 'application/pdf' and not name contains 'Comentarios'",
+        "filter": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        560
+      ],
+      "id": "d0e18540-cc71-493c-9efe-ab3c64fc0618",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "BDZOCNwWqApK2BD9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json[0]?.id ?? $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1248,
+        560
+      ],
+      "id": "dcd0927d-96d7-4679-a297-1cbc294cb1f5",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "BDZOCNwWqApK2BD9",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        1456,
+        560
+      ],
+      "id": "68339df4-7bc5-4df1-80b9-d818ca40111a",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "const texto = ($json.text || '').slice(0, 20000);\nconst archivo = $('Search files and folders').first().json.name \n             || $('Search files and folders').first().json[0]?.name \n             || 'normativa.pdf';\n\nreturn [{\n  json: {\n    matches: [{ texto: texto, fuente: archivo }]\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        560
+      ],
+      "id": "29ffef5c-51fa-4b6a-8175-d3eed19b73c2",
+      "name": "Code in JavaScript3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Recibir Instrucciones de Diseno": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Crear Proyecto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Crear Proyecto": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Agente Clasificador de Normativa": {
+      "main": [
+        [
+          {
+            "node": "Code - Parsear Normativa Detectada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Parsear Normativa Detectada": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Contexto Normativo Suficiente": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Registrar Error Normativa No Encontrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Registrar Error Normativa No Encontrada": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Notificar Normativa Faltante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Notificar Normativa Faltante": {
+      "main": [
+        [
+          {
+            "node": "Stop - Sin Normativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Agente Parametrizador": {
+      "main": [
+        [
+          {
+            "node": "Code - Parsear Respuesta Parametrizador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Parsear Respuesta Parametrizador": {
+      "main": [
+        [
+          {
+            "node": "IF - Parametros Completos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Parametros Completos": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Guardar Parametros",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code Python - Ejecutar Calculo Estructural",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Registrar Error Parametros Faltantes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Registrar Error Parametros Faltantes": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Solicitar Dato Faltante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Solicitar Dato Faltante": {
+      "main": [
+        [
+          {
+            "node": "Stop - Parametros Incompletos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Guardar Parametros": {
+      "main": [
+        []
+      ]
+    },
+    "Code Python - Ejecutar Calculo Estructural": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Guardar Resultado",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Registrar Error de Calculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Registrar Error de Calculo": {
+      "main": [
+        [
+          {
+            "node": "Stop - Error de Calculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Guardar Resultado": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini - Agente Auditor": {
+      "main": [
+        [
+          {
+            "node": "Code - Parsear Respuesta Auditor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Parsear Respuesta Auditor": {
+      "main": [
+        [
+          {
+            "node": "IF - Auditor Conforme",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Auditor Conforme": {
+      "main": [
+        [
+          {
+            "node": "Airtable - Update Auditoria OK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Update Auditoria Rechazada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Update Auditoria Rechazada": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Notificar Incoherencia Auditoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Notificar Incoherencia Auditoria": {
+      "main": [
+        [
+          {
+            "node": "Stop - Auditoria Rechazada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable - Update Auditoria OK": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Enviar Reporte Preliminar para Aprobacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Enviar Reporte Preliminar para Aprobacion": {
+      "main": [
+        [
+          {
+            "node": "Wait - Esperar Aprobacion del Ingeniero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait - Esperar Aprobacion del Ingeniero": {
+      "main": [
+        [
+          {
+            "node": "IF - Aprobado por Ingeniero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Aprobado por Ingeniero": {
+      "main": [
+        [
+          {
+            "node": "Code - Generar Reporte Final",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Airtable - Update Rechazado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Generar Reporte Final": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Enviar Reporte Final al Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Enviar Reporte Final al Cliente": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Agente Parametrizador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Agente Clasificador de Normativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Gemini - Agente Auditor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "IF - Contexto Normativo Suficiente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d413aa1c-fbb1-4eef-bf49-81b669ac9ea0",
+  "meta": {
+    "instanceId": "b704c7e7369298b89886aa4cf119246e84bc4a0f5d46888940c31d4e3858051b"
+  },
+  "nodeGroups": [],
+  "id": "ylkEOPcQcgNSmSJT",
+  "tags": []
+}
