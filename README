@@ -1,1 +1,28 @@
+# Memorias de Cálculo Estructural — Ecosistema de Automatización IA
 
+Sistema de automatización que recibe solicitudes de cálculo estructural,
+las fundamenta contra normativa CIRSOC real (leída de Google Drive),
+ejecuta el cálculo en Python determinístico, lo audita con IA, y lo
+somete a aprobación de un ingeniero matriculado antes de emitir el
+reporte final.
+
+## Documentación completa
+Ver `/documentacion/Documentacion_Tecnica_Completa.pdf` — incluye
+diagrama de arquitectura, estructuras de datos, matriz de costos y
+seguridad/resiliencia.
+
+## Blueprint del flujo
+Ver `/blueprints/` — JSON listo para importar en n8n.
+
+## Dashboard de control (KPIs y tasa de errores)
+https://airtable.com/appZygS7fAt4IgXYF/shrk5gMx4zjO98LTG
+(seleccionar la vista "Dashboard - KPIs" en el panel lateral)
+
+## Base de datos (modo lectura)
+https://airtable.com/appZygS7fAt4IgXYF/shrk5gMx4zjO98LTG
+
+## Video demo
+[PEGAR LINK]
+
+## Evidencia
+Ver `/screenshots/`
