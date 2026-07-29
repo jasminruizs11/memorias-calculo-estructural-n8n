@@ -7,9 +7,9 @@ somete a aprobación de un ingeniero matriculado antes de emitir el
 reporte final.
 
 ## Documentación completa
-Ver `/documentacion/Documentacion_Tecnica_Completa.pdf` — incluye
+Ver https://drive.google.com/file/d/1o1MQQFnKWeEzx5VWmu-oQAGNj5tG_CeA/view?usp=sharing — incluye
 diagrama de arquitectura, estructuras de datos, matriz de costos y
-seguridad/resiliencia.
+seguridad
 
 ## Blueprint del flujo
 Ver `/blueprints/` — JSON listo para importar en n8n.
@@ -22,7 +22,7 @@ https://airtable.com/appZygS7fAt4IgXYF/shrk5gMx4zjO98LTG
 https://airtable.com/appZygS7fAt4IgXYF/shrk5gMx4zjO98LTG
 
 ## Video demo
-https://drive.google.com/file/d/1o1MQQFnKWeEzx5VWmu-oQAGNj5tG_CeA/view?usp=sharing
+https://drive.google.com/file/d/1TN2x3pnDZkeAMYHul42TwrTyr39kY3Cr/view?usp=sharing
 
 ## Evidencia
 Ver `/screenshots/`
